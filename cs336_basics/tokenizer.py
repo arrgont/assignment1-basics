@@ -37,8 +37,11 @@ class Tokenizer:
             for special_token in special_tokens:
                 special_token_bytes = special_token.encode("utf-8")
                 if special_token_bytes not in self.bytes_to_id:
-                    self.vocab[len(self.vocab)] = special_token_bytes
-                    self.bytes_to_id[special_token_bytes] = len(self.vocab)
+                    token_id = max(self.vocab, default=-1) + 1
+                    self.vocab[token_id] = special_token_bytes
+                    self.bytes_to_id[special_token_bytes] = token_id
+                    # self.vocab[len(self.vocab)] = special_token_bytes
+                    # self.bytes_to_id[special_token_bytes] = len(self.vocab)
 
         ordered_specials = sorted(
             self.special_tokens,
