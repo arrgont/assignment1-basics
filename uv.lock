@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.12, <3.14"
 
 [[package]]
@@ -90,6 +90,7 @@ dependencies = [
     { name = "einops" },
     { name = "einx" },
     { name = "jaxtyping" },
+    { name = "lib" },
     { name = "numpy" },
     { name = "psutil" },
     { name = "pytest" },
@@ -108,6 +109,7 @@ requires-dist = [
     { name = "einops", specifier = ">=0.8" },
     { name = "einx", specifier = ">=0.4" },
     { name = "jaxtyping", specifier = ">=0.3" },
+    { name = "lib", specifier = ">=4.0.0" },
     { name = "numpy", specifier = ">=2.4" },
     { name = "psutil", specifier = ">=7" },
     { name = "pytest", specifier = ">=9.0" },
@@ -153,37 +155,37 @@ wheels = [
 
 [package.optional-dependencies]
 cublas = [
-    { name = "nvidia-cublas", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "nvidia-cublas" },
 ]
 cudart = [
-    { name = "nvidia-cuda-runtime", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "nvidia-cuda-runtime" },
 ]
 cufft = [
-    { name = "nvidia-cufft", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "nvidia-cufft" },
 ]
 cufile = [
-    { name = "nvidia-cufile", marker = "sys_platform == 'linux'" },
+    { name = "nvidia-cufile" },
 ]
 cupti = [
-    { name = "nvidia-cuda-cupti", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "nvidia-cuda-cupti" },
 ]
 curand = [
-    { name = "nvidia-curand", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "nvidia-curand" },
 ]
 cusolver = [
-    { name = "nvidia-cusolver", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "nvidia-cusolver" },
 ]
 cusparse = [
-    { name = "nvidia-cusparse", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "nvidia-cusparse" },
 ]
 nvjitlink = [
-    { name = "nvidia-nvjitlink", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "nvidia-nvjitlink" },
 ]
 nvrtc = [
-    { name = "nvidia-cuda-nvrtc", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "nvidia-cuda-nvrtc" },
 ]
 nvtx = [
-    { name = "nvidia-nvtx", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "nvidia-nvtx" },
 ]
 
 [[package]]
@@ -300,6 +302,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c72f3e33cef02e048281fec7ecec5f032d4aac52226b/jinja2-3.1.6.tar.gz", hash = "sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d", size = 245115, upload-time = "2025-03-05T20:05:02.478Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl", hash = "sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67", size = 134899, upload-time = "2025-03-05T20:05:00.369Z" },
+]
+
+[[package]]
+name = "lib"
+version = "4.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d8/09/213f0ca3259ce805212fb0615858dc7d87d30bf776179f19d23a5d690aa4/lib-4.0.0.tar.gz", hash = "sha256:da861f02e9ee8748a8f168584de94f0ed85aad65e70f62760f1962ae515c94e1", size = 2769, upload-time = "2021-12-14T03:13:30.296Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/41/4d/a1a283987b6e478f5e1c89f1721b54b546a7375c76b77578e7d770861ea3/lib-4.0.0-py3-none-any.whl", hash = "sha256:d0a9e03b27d2b94c403f43c1af39366500032d587dcd45ffdf707131cbdf58c6", size = 4047, upload-time = "2021-12-14T03:13:28.763Z" },
 ]
 
 [[package]]
