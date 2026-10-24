@@ -1,14 +1,6 @@
-# naive implementation
-#可优化：预分词：分块后交给多个进程，各自计数，再汇总
-#           ·multiprocessing、spawn、get_context、Pool、imap_unordered等
-#       合并：维护pair频率和“哪些词包含该pair”的索引，每轮只处理受影响的词
-#           ·倒排索引：根据某个内容，快速找到哪些对象包含它
-#           ·pair_to_words:指出相应pair出现在哪些词中，避免遍历所有词
-#           ·pair_freqs只去加减变化量，从而做到不全量更新
+# 维护 pair 频率和词索引，每轮只更新受合并影响的词。
+from collections import defaultdict
 
-import os
-from typing import BinaryIO
-import regex as re
 from cs336_basics.count_pretokens import count_pretoken
 
 def initialize_vocab(special_tokens) -> dict[int, bytes]:
@@ -37,12 +29,31 @@ def train_bpe(
     #print(counts)
     num_merges = vocab_size - 256 - len(special_tokens)
     merges = []
-    for step in range(num_merges):
-        pair_freqs = {}
-        for tokens, freq in counts.items():
-            for pair in zip(tokens, tokens[1:]):
-                  pair_freqs[pair] = pair_freqs.get(pair, 0) + freq
+    pair_freqs = {}
 
+    pair_to_words = defaultdict(set)
+
+    def update_pairs(tokens, delta):
+        # 重复出现的 pair 需要按出现次数累计频率。
+        for pair in zip(tokens, tokens[1:]):
+            pair_freqs[pair] = pair_freqs.get(pair, 0) + delta
+            if pair_freqs[pair] == 0:
+                del pair_freqs[pair]
+
+        # 索引只记录一个词是否包含该 pair，因此先去重。
+        for pair in set(zip(tokens, tokens[1:])):
+            if delta > 0:
+                pair_to_words[pair].add(tokens)
+            else:
+                pair_to_words[pair].remove(tokens)
+                if not pair_to_words[pair]:
+                    del pair_to_words[pair]
+
+    # 全量统计只在训练开始时执行一次。
+    for tokens, freq in counts.items():
+        update_pairs(tokens, freq)
+
+    for step in range(num_merges):
         if not pair_freqs:
             break
          
@@ -53,9 +64,12 @@ def train_bpe(
 
         merges.append(best_pair)
         mergedtoken = best_pair[0] + best_pair[1]
-        new_counts = {}
 
-        for tokens, freq in counts.items():
+        # 更新过程中会修改索引，先保存本轮受影响的词。
+        for tokens in list(pair_to_words[best_pair]):
+            freq = counts.pop(tokens)
+            update_pairs(tokens, -freq)
+
             i = 0
             new_tokens = []
             while i < len(tokens):
@@ -65,8 +79,9 @@ def train_bpe(
                 else:
                     new_tokens.append(tokens[i])
                     i += 1
-            new_counts[tuple(new_tokens)] = new_counts.get(tuple(new_tokens), 0) + freq
-        counts = new_counts
+            new_tokens = tuple(new_tokens)
+            counts[new_tokens] = counts.get(new_tokens, 0) + freq
+            update_pairs(new_tokens, freq)
 
         vocab[len(vocab)] = mergedtoken
 

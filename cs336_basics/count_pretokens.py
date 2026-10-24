@@ -3,9 +3,6 @@ from typing import BinaryIO
 import regex as re
 from collections import Counter
 
-from sympy.physics.units import frequency
-
-
 def find_chunk_boundaries(
     file: BinaryIO,
     desired_num_chunks: int,
@@ -81,7 +78,7 @@ def count_pretoken(
                 text_parts = [chunk]
             for text in text_parts:
                 for match in re.finditer(PAT, text):
-                    word_counts.update(match.group(0))
+                    word_counts[match.group(0)] += 1
 
         while word_counts:
             pre_token, frequency = word_counts.popitem()
