@@ -1,6 +1,10 @@
 import os
 from typing import BinaryIO
 import regex as re
+from collections import Counter
+
+from sympy.physics.units import frequency
+
 
 def find_chunk_boundaries(
     file: BinaryIO,
@@ -56,6 +60,7 @@ def count_pretoken(
     with open(input_path, "rb") as f:
         num_processes = 4
         counts = {}
+        word_counts = Counter()
         PAT = r"""'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+"""
         boundaries = find_chunk_boundaries(f, num_processes, b"<|endoftext|>")
 
@@ -76,12 +81,32 @@ def count_pretoken(
                 text_parts = [chunk]
             for text in text_parts:
                 for match in re.finditer(PAT, text):
+                    word_counts.update(match.group(0))
+
+        while word_counts:
+            pre_token, frequency = word_counts.popitem()
+
+            pre_tokens = tuple(
+                bytes([b])
+                for b in pre_token.encode("utf-8")
+            )
+
+            counts[pre_tokens] = frequency
+
+        return counts
+
+
+
+
                     #pretoken = match.group(0)
-                    pretoken = tuple(
-                        bytes([b])
-                        for b in match.group(0).encode("utf-8")
-                    )
-                    counts[pretoken] = counts.get(pretoken, 0) + 1
+                    #pretoken = tuple(
+                    #    bytes([b])
+                    #    for b in match.group(0).encode("utf-8")
+                    #)
+                    #counts[pretoken] = counts.get(pretoken, 0) + 1
+
+
+
                     #可优化：反复转换相同的词片段，可以先统计字符串出现次数然后再进行转换
                     # # 放在所有分块循环之外，让各块共用这份计数
                     # text_counts = {}
