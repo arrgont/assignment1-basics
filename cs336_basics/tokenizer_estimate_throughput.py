@@ -2,7 +2,7 @@ import time
 import statistics
 
 from cs336_basics import tokenizer
-from cs336_basics.tokenizer_experiments import ts_tokenizer, ts_documents, owt_documents
+from cs336_basics.tokenizer_experiments import ts_tokenizer, ts_documents, owt_tokenizer, owt_documents
 
 
 def measure_throughput(
@@ -41,7 +41,7 @@ def measure_throughput(
 
 for name, tokenizer, documents in [
     ("TinyStories", ts_tokenizer, ts_documents),
-    #("OpenWebText", owt_tokenizer, owt_documents),
+    ("OpenWebText", owt_tokenizer, owt_documents),
 ]:
     speed = measure_throughput(tokenizer, documents)
 

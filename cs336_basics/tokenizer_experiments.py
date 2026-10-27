@@ -84,14 +84,13 @@ ts_tokenizer = Tokenizer.from_files(
 
 assert len(ts_tokenizer.vocab) == 10000
 
-#owt训练结果待补充
-# owt_tokenizer = Tokenizer.from_files(
-#     vocab_filepath=str(DATA / "owt_vocab.pkl"),
-#     merges_filepath=str(DATA / "owt_merges.pkl"),
-#     special_tokens=[EOS],
-# )
-#
-# assert len(owt_tokenizer.vocab) == 32000
+owt_tokenizer = Tokenizer.from_files(
+    vocab_filepath=str(DATA / "owt_vocab.pkl"),
+    merges_filepath=str(DATA / "owt_merges.pkl"),
+    special_tokens=[EOS],
+)
+
+assert len(owt_tokenizer.vocab) == 32000
 
 def compression_stats(tokenizer,documents):
     total_bytes = 0
@@ -117,13 +116,12 @@ ts_result = compression_stats(
 
 print("TinyStories:", ts_result)
 
-#owt的bpe训练结果待实现
-# owt_result = compression_stats(
-#     owt_tokenizer,
-#     owt_documents,
-# )
-#
-# print("OpenWebText:", owt_result)
+owt_result = compression_stats(
+    owt_tokenizer,
+    owt_documents,
+)
+
+print("OpenWebText:", owt_result)
 
 cross_result = compression_stats(
     ts_tokenizer,
