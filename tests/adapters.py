@@ -18,6 +18,7 @@ from cs336_basics.softmax import softmax
 from cs336_basics.swiglu_layer import SwiGLU, silu
 from cs336_basics.tokenizer import Tokenizer
 from cs336_basics.linear_layer import Linear
+from cs336_basics.transformer_block import TransformerBlock
 
 
 def run_linear(
@@ -384,7 +385,27 @@ def run_transformer_block(
         Float[Tensor, "batch sequence_length d_model"] Tensor with the output of
         running the Transformer block on the input features while using RoPE.
     """
-    raise NotImplementedError
+    #raise NotImplementedError
+
+    rope = RotaryPositionalEmbedding(
+        theta=theta,
+        d_k=d_model // num_heads,
+        max_seq_len=max_seq_len,
+        device=in_features.device,
+    )
+
+    block = TransformerBlock(
+        d_model=d_model,
+        num_heads=num_heads,
+        d_ff=d_ff,
+        rope=rope,
+        device=in_features.device,
+        dtype=in_features.dtype,
+    )
+
+    block.load_state_dict(weights)
+
+    return block(in_features)
 
 
 def run_transformer_lm(
